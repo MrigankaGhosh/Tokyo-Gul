@@ -9,5 +9,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 	public User findByPhoneNumber(String phoneNumber);
 
 	public User findByName(String name);
-	
+
+	public void deleteAllOrderDetailsById(int id);
 }

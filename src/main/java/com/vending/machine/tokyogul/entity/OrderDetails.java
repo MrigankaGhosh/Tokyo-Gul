@@ -1,8 +1,9 @@
 package com.vending.machine.tokyogul.entity;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -17,10 +18,7 @@ public class OrderDetails {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private int id;
 
-	private String item;
-
-	@Column(name = "user_id")
-	private int userId;
+	private List<String> items;
 
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonManagedReference
@@ -30,10 +28,9 @@ public class OrderDetails {
 		super();
 	}
 
-	public OrderDetails(String item, int userId) {
+	public OrderDetails(List<String> item) {
 		super();
-		this.item = item;
-		this.userId = userId;
+		this.items = item;
 	}
 
 	public int getId() {
@@ -44,20 +41,12 @@ public class OrderDetails {
 		return user;
 	}
 
-	public String getItem() {
-		return item;
+	public List<String> getItems() {
+		return items;
 	}
 
-	public void setItem(String item) {
-		this.item = item;
-	}
-
-	public int getUserId() {
-		return userId;
-	}
-
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setItems(List<String> items) {
+		this.items = items;
 	}
 
 }

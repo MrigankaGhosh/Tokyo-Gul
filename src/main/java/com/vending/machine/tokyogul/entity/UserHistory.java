@@ -8,22 +8,24 @@ public class UserHistory {
 	private double lastBill;
 	private double totalBill;
 	private int totalVisits;
+	private int lastDiscount;
 
 	@Override
 	public String toString() {
-		return String.format("UserHistory [lastBill=%s, totalBill=%s, totalVisits=%s]", lastBill, totalBill,
-				totalVisits);
+		return String.format("UserHistory [lastBill=%s, totalBill=%s, totalVisits=%s, lastDiscount=%s]", lastBill,
+				totalBill, totalVisits, lastDiscount);
 	}
 
 	public UserHistory() {
 		super();
 	}
 
-	public UserHistory(double lastBill, double totalBill, int totalVisits) {
+	public UserHistory(double lastBill, double totalBill, int totalVisits, int lastDiscount) {
 		super();
 		this.lastBill = lastBill;
 		this.totalBill = totalBill;
 		this.totalVisits = totalVisits;
+		this.lastDiscount = lastDiscount;
 	}
 
 	public double getLastBill() {
@@ -48,6 +50,14 @@ public class UserHistory {
 
 	public void setTotalVisits(int totalVisits) {
 		this.totalVisits = totalVisits;
+	}
+
+	public int getLastDiscount() {
+		return lastDiscount;
+	}
+
+	public void setLastDiscount(int lastDiscount) {
+		this.lastDiscount = lastDiscount;
 	}
 
 }

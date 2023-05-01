@@ -10,7 +10,9 @@ public interface UserService {
 	
 	public boolean isPresent(String phoneNumber);
 
-	public boolean addUser(User user);
+	public void addUser(User user);
+	
+	public void updateUser(User user);
 	
 	public boolean deleteUser(User user);
 	
@@ -18,6 +20,8 @@ public interface UserService {
 	
 	public UserHistory getUserHistory(String phoneNumber);
 	
-	public boolean updateUserHistory(UserHistory userHistory);
+	public boolean updateUserHistory(UserHistory userHistory, String phoneNumber);
+	
+	public void deleteAllOrderDetails(int id);
 
 }

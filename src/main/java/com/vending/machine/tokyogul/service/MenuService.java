@@ -1,5 +1,7 @@
 package com.vending.machine.tokyogul.service;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import com.vending.machine.tokyogul.entity.Menu;
@@ -7,8 +9,10 @@ import com.vending.machine.tokyogul.entity.Menu;
 @Service
 public interface MenuService {
 
-	public Menu getMenuByItem(String item);
+	public List<Menu> getMenuByItem(String item);
 
-	public Menu getMenuByCategory(String category);
+	public List<Menu> getMenuByCategory(String category);
+	
+	public List<Menu> getAllMenu();
 	
 }

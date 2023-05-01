@@ -19,5 +19,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		return new ResponseEntity<Object>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
+	
+	@ExceptionHandler(UserNotFoundException.class)
+	public final ResponseEntity<Object> handleUserNotFoundException(Exception ex, WebRequest request) {
+		ErrorDetails errorDetails = new ErrorDetails(LocalDateTime.now(), ex.getMessage(),
+				request.getDescription(false));
+
+		return new ResponseEntity<Object>(errorDetails, HttpStatus.NO_CONTENT);
+	}
 
 }
