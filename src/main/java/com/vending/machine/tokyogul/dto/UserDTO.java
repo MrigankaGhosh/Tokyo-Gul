@@ -2,6 +2,9 @@ package com.vending.machine.tokyogul.dto;
 
 import java.util.HashMap;
 
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
 public class UserDTO {
 
 	private String name;
@@ -17,6 +20,10 @@ public class UserDTO {
 		return String.format(
 				"UserDTO [name=%s, phoneNumber=%s, email=%s, finalBill=%s, discount=%s, taxDeduction=%s, selectedItems=%s]",
 				name, phoneNumber, email, finalBill, discount, taxDeduction, selectedItems);
+	}
+
+	public UserDTO() {
+		super();
 	}
 
 	public UserDTO(String name, String phoneNumber, String email, double totalBill, double discount,

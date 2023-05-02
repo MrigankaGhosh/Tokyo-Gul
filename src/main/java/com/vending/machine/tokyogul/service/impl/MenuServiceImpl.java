@@ -3,11 +3,13 @@ package com.vending.machine.tokyogul.service.impl;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.vending.machine.tokyogul.entity.Menu;
 import com.vending.machine.tokyogul.repository.MenuRepository;
 import com.vending.machine.tokyogul.service.MenuService;
 
+@Service
 public class MenuServiceImpl implements MenuService {
 
 	@Autowired
@@ -27,5 +29,18 @@ public class MenuServiceImpl implements MenuService {
 	public List<Menu> getAllMenu() {
 		return repository.findAll();
 	}
+
+	@Override
+	public void addMenuItem(Menu menu) {
+		repository.save(menu);
+		
+	}
+
+	@Override
+	public void deleteMenuItem(int id) {
+		repository.deleteById(id);
+		
+	}
+
 
 }

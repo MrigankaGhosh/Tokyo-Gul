@@ -1,12 +1,14 @@
 package com.vending.machine.tokyogul.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.vending.machine.tokyogul.entity.User;
 import com.vending.machine.tokyogul.entity.UserHistory;
 import com.vending.machine.tokyogul.repository.UserRepository;
 import com.vending.machine.tokyogul.service.UserService;
 
+@Service
 public class UserServiceImpl implements UserService {
 
 	@Autowired

@@ -15,4 +15,7 @@ public interface MenuService {
 	
 	public List<Menu> getAllMenu();
 	
+	public void addMenuItem(Menu menu);
+	
+	public void deleteMenuItem(int id);
 }

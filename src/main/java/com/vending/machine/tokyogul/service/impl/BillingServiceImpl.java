@@ -3,6 +3,7 @@ package com.vending.machine.tokyogul.service.impl;
 import java.util.HashMap;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.vending.machine.tokyogul.dto.UserDTO;
 import com.vending.machine.tokyogul.entity.Menu;
@@ -14,6 +15,7 @@ import com.vending.machine.tokyogul.service.BillingService;
 import com.vending.machine.tokyogul.service.MenuService;
 import com.vending.machine.tokyogul.service.UserService;
 
+@Service
 public class BillingServiceImpl implements BillingService {
 
 	@Autowired

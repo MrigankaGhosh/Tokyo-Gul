@@ -1,13 +1,21 @@
 package com.vending.machine.tokyogul.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 
 @Embeddable
 public class UserHistory {
 
+	@Column(nullable = false, columnDefinition = "double default 0")
 	private double lastBill;
+
+	@Column(nullable = false, columnDefinition = "double default 0")
 	private double totalBill;
+
+	@Column(nullable = false, columnDefinition = "integer default 0")
 	private int totalVisits;
+
+	@Column(nullable = false, columnDefinition = "integer default 0")
 	private int lastDiscount;
 
 	@Override

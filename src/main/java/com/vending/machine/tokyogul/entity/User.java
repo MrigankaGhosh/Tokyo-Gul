@@ -3,6 +3,8 @@ package com.vending.machine.tokyogul.entity;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.context.annotation.Configuration;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
@@ -15,6 +17,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 
 @Entity
+@Configuration
 public class User {
 
 	@Id
@@ -43,6 +46,13 @@ public class User {
 
 	public User() {
 		super();
+	}
+
+	public User(String name, String phoneNumber, String email) {
+		super();
+		this.name = name;
+		this.phoneNumber = phoneNumber;
+		this.email = email;
 	}
 
 	public User(String name, String phoneNumber, String email, UserHistory userHistory) {
