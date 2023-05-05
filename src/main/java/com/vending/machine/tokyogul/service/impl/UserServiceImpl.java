@@ -24,9 +24,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void addUser(User user) {
-		if (isPresent(user.getPhoneNumber()) == true) {
-			updateUser(user);
-		}
 		repository.save(user);
 	}
 
@@ -72,7 +69,7 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void deleteAllOrderDetails(int id) {
 		repository.deleteAllOrderDetailsById(id);
-		
+
 	}
 
 }

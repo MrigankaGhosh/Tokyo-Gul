@@ -15,6 +15,8 @@ import com.vending.machine.tokyogul.service.BillingService;
 import com.vending.machine.tokyogul.service.MenuService;
 import com.vending.machine.tokyogul.service.UserService;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class BillingServiceImpl implements BillingService {
 
@@ -27,6 +29,7 @@ public class BillingServiceImpl implements BillingService {
 	@Autowired
 	private MenuService menuService;
 
+	@Transactional
 	@Override
 	public UserDTO calculateTotalBill(OrderDetails orderDetails, String phoneNumber) {
 
@@ -71,6 +74,7 @@ public class BillingServiceImpl implements BillingService {
 		return userDTO;
 	}
 
+	@Transactional
 	@Override
 	public int calculateDiscount(UserHistory userHistory) {
 		if ((userHistory.getTotalBill() > 30000 && userHistory.getLastBill() > 700
