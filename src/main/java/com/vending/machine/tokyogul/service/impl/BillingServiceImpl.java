@@ -67,8 +67,12 @@ public class BillingServiceImpl implements BillingService {
 		}
 
 		// Calculating total Bill
+
 		double discountPercent = calculateDiscount(this.user.getUserHistory());
-		double discountAmount = (discountPercent / 100) * billBeforeDiscount;
+		// double discountAmount = (discountPercent / 100) * billBeforeDiscount;
+
+		double discountAmount = (calculateDiscount(this.user.getUserHistory()) / 100.0) * billBeforeDiscount;
+
 		double billBeforeTax = billBeforeDiscount - discountAmount;
 		double finalBill = billBeforeTax + calculateTaxAmount(billBeforeTax);
 
