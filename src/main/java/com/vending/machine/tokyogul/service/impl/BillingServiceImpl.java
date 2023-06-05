@@ -1,6 +1,8 @@
 package com.vending.machine.tokyogul.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,9 +44,20 @@ public class BillingServiceImpl implements BillingService {
 		HashMap<String, Double> selectedItems = new HashMap<>();
 
 		this.user = userService.getUserByPhoneNumber(phoneNumber);
+		
+		System.out.println(orderDetails.toString());
 
 		// Save the total amount in a variable and save the items+prices in a hashmap
-		for (String item : orderDetails.getItems()) {
+		List<String> itemList = new ArrayList<>();
+		String[] itemArray = null;
+		for(String buffer: orderDetails.getItems()) {
+			itemArray = buffer.split(",");
+		}
+		for(int i=0;i<itemArray.length;i++) {
+			itemList.add(itemArray[i]);
+		}
+		for (String item : itemList) {
+			System.out.println(item+"................");
 			for (Menu menuItem : menuService.getAllMenu()) {
 				if (item.equalsIgnoreCase(menuItem.getItem())) {
 					billBeforeDiscount += menuItem.getPrice();
@@ -54,22 +67,27 @@ public class BillingServiceImpl implements BillingService {
 		}
 
 		// Calculating total Bill
-		double discountAmount = (calculateDiscount(this.user.getUserHistory()) / 100) * billBeforeDiscount;
+		double discountPercent = calculateDiscount(this.user.getUserHistory());
+		double discountAmount = (discountPercent / 100) * billBeforeDiscount;
 		double billBeforeTax = billBeforeDiscount - discountAmount;
 		double finalBill = billBeforeTax + calculateTaxAmount(billBeforeTax);
 
 		UserDTO userDTO = new UserDTO(this.user.getName(), phoneNumber, this.user.getEmail(), finalBill, discountAmount,
 				calculateTaxAmount(billBeforeTax), selectedItems);
 
+		UserHistory userHistory = this.user.getUserHistory();
 		// Update user history the already exceeded 12%
-		this.user.getUserHistory().setLastDiscount(calculateDiscount(this.user.getUserHistory()));
-		if (this.user.getUserHistory().getLastDiscount() == 12) {
-			this.user.getUserHistory().setLastDiscount(0);
-			this.user.getUserHistory().setTotalBill(0);
-			this.user.getUserHistory().setTotalVisits(0);
+		userHistory.setLastDiscount(calculateDiscount(this.user.getUserHistory()));
+		if (userHistory.getLastDiscount() == 12) {
+			userHistory.setLastDiscount(0);
+			userHistory.setTotalBill(0);
+			userHistory.setTotalVisits(0);
 			userService.deleteAllOrderDetails(this.user.getId());
 		}
-		this.user.getUserHistory().setLastBill(finalBill);
+		userHistory.setLastBill(finalBill);
+		userHistory.setTotalBill(finalBill + this.user.getUserHistory().getTotalBill());
+		userHistory.setTotalVisits(this.user.getUserHistory().getTotalVisits() + 1);
+		userHistory.setLastDiscount((int) discountPercent);
 
 		return userDTO;
 	}
