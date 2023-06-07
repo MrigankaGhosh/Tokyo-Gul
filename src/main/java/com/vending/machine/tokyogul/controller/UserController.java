@@ -47,6 +47,8 @@ public class UserController {
 			user.setUserHistory(userHistory);
 		} else {
 			return new ResponseEntity<>(HttpStatus.CONFLICT);
+			
+			//don't use conflict
 		}
 		userService.addUser(user);
 		return new ResponseEntity<>(HttpStatus.CREATED);
