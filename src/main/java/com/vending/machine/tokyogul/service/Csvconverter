@@ -1,0 +1,54 @@
+import java.io.*;
+
+public class CSVToInsertSQL {
+
+    public static void main(String[] args) {
+        String inputCsvFile = "path_to_your_input.csv";  // path to your CSV file
+        String outputTxtFile = "path_to_your_output.txt"; // path for output SQL
+
+        String tableName = "your_table_name"; // <-- change this to your target table
+
+        try (BufferedReader br = new BufferedReader(new FileReader(inputCsvFile));
+             BufferedWriter bw = new BufferedWriter(new FileWriter(outputTxtFile))) {
+
+            String line;
+            boolean firstRow = true;
+
+            // Start with INSERT INTO statement
+            bw.write("INSERT INTO " + tableName + " VALUES");
+            bw.newLine();
+
+            while ((line = br.readLine()) != null) {
+                // Assuming CSV is comma-separated
+                String[] parts = line.split(",", -1);
+
+                // Join parts using | separator
+                StringBuilder pipeSeparated = new StringBuilder();
+                for (int i = 0; i < parts.length; i++) {
+                    if (i > 0) pipeSeparated.append("|");
+                    pipeSeparated.append(parts[i]);
+                }
+
+                String formattedString = StringFormatter.convertString(pipeSeparated.toString());
+
+                if (!firstRow) {
+                    bw.write(",");
+                    bw.newLine();
+                } else {
+                    firstRow = false;
+                }
+
+                bw.write(formattedString);
+            }
+
+            // End with semicolon
+            bw.write(";");
+            bw.newLine();
+
+            System.out.println("SQL file generated successfully: " + outputTxtFile);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}
