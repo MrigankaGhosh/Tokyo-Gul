@@ -3,8 +3,8 @@ import java.io.*;
 public class CSVBatchConverter {
 
     public static void main(String[] args) {
-        File inputFolder = new File("C:\\InputCSVs");
-        File outputFolder = new File("C:\\OutputSQLs");
+        File inputFolder = new File("C:\\InputCSVs");      // Folder with subfolders or CSVs
+        File outputFolder = new File("C:\\OutputSQLs");    // Destination folder for .txt files
 
         if (!outputFolder.exists()) {
             outputFolder.mkdirs();
@@ -21,15 +21,16 @@ public class CSVBatchConverter {
             String baseName = csvFile.getName().replaceFirst("[.][^.]+$", "");
             File outputFile = new File(outputFolder, baseName + ".txt");
 
-            convertCsvToIndividualDb2Inserts(csvFile, outputFile);
+            // Use parent folder name as table name
+            String tableName = csvFile.getParentFile().getName();
+
+            convertCsvToIndividualDb2Inserts(csvFile, outputFile, tableName);
         }
 
         System.out.println("All CSV files converted successfully.");
     }
 
-    public static void convertCsvToIndividualDb2Inserts(File csvFile, File outputFile) {
-        String tableName = "YOUR_DB2_TABLE";  // Replace with your table name
-
+    public static void convertCsvToIndividualDb2Inserts(File csvFile, File outputFile, String tableName) {
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile));
              BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
 
