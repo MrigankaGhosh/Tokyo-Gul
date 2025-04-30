@@ -3,8 +3,8 @@ import java.io.*;
 public class CSVBatchConverter {
 
     public static void main(String[] args) {
-        File inputFolder = new File("C:\\InputCSVs");      // Folder with subfolders or CSVs
-        File outputFolder = new File("C:\\OutputSQLs");    // Destination folder for .txt files
+        File inputFolder = new File("C:\\InputCSVs");     // Folder with .csv files
+        File outputFolder = new File("C:\\OutputSQLs");   // Output .txt destination
 
         if (!outputFolder.exists()) {
             outputFolder.mkdirs();
@@ -18,16 +18,31 @@ public class CSVBatchConverter {
         }
 
         for (File csvFile : csvFiles) {
-            String baseName = csvFile.getName().replaceFirst("[.][^.]+$", "");
-            File outputFile = new File(outputFolder, baseName + ".txt");
+            String csvFileName = csvFile.getName().replaceFirst("[.][^.]+$", "");  // Remove extension
+            File outputFile = new File(outputFolder, csvFileName + ".txt");
 
-            // Use parent folder name as table name
-            String tableName = csvFile.getParentFile().getName();
+            // Get folder name and compute table name
+            String folderName = csvFile.getParentFile().getName();
+            String tableName = adjustTableName(folderName, csvFileName);
 
             convertCsvToIndividualDb2Inserts(csvFile, outputFile, tableName);
         }
 
         System.out.println("All CSV files converted successfully.");
+    }
+
+    // Adjust table name based on folder and file name
+    private static String adjustTableName(String folderName, String csvName) {
+        String modifiedTable = folderName;
+
+        if (!folderName.isEmpty() && !csvName.isEmpty() &&
+            Character.toLowerCase(folderName.charAt(0)) == Character.toLowerCase(csvName.charAt(0))) {
+
+            // Replace first letter with 't'
+            modifiedTable = "t" + folderName.substring(1);
+        }
+
+        return "sibdba01." + modifiedTable;
     }
 
     public static void convertCsvToIndividualDb2Inserts(File csvFile, File outputFile, String tableName) {
