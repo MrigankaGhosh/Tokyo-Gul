@@ -1,78 +1,57 @@
-import java.io.*;
+public static void convertCsvToIndividualDb2Inserts(File csvFile, File outputBaseFile, String tableName) {
+    final int MAX_LINES = 200000;
+    int fileCounter = 1;
+    int lineCounter = 0;
 
-public class CSVBatchConverter {
+    BufferedWriter bw = null;
 
-    public static void main(String[] args) {
-        File inputFolder = new File("C:\\InputCSVs");     // Folder with .csv files
-        File outputFolder = new File("C:\\OutputSQLs");   // Output .txt destination
+    try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+        String baseFileName = outputBaseFile.getName().replaceFirst("[.][^.]+$", "");
+        String outputFolderPath = outputBaseFile.getParent();
 
-        if (!outputFolder.exists()) {
-            outputFolder.mkdirs();
-        }
+        // Skip header
+        String line = br.readLine();
 
-        File[] csvFiles = inputFolder.listFiles((dir, name) -> name.toLowerCase().endsWith(".csv"));
+        while ((line = br.readLine()) != null) {
+            if (line.trim().isEmpty()) continue;
 
-        if (csvFiles == null || csvFiles.length == 0) {
-            System.out.println("No CSV files found in input folder.");
-            return;
-        }
-
-        for (File csvFile : csvFiles) {
-            String csvFileName = csvFile.getName().replaceFirst("[.][^.]+$", "");  // Remove extension
-            File outputFile = new File(outputFolder, csvFileName + ".txt");
-
-            // Get folder name and compute table name
-            String folderName = csvFile.getParentFile().getName();
-            String tableName = adjustTableName(folderName, csvFileName);
-
-            convertCsvToIndividualDb2Inserts(csvFile, outputFile, tableName);
-        }
-
-        System.out.println("All CSV files converted successfully.");
-    }
-
-    // Adjust table name based on folder and file name
-    private static String adjustTableName(String folderName, String csvName) {
-        String modifiedTable = folderName;
-
-        if (!folderName.isEmpty() && !csvName.isEmpty() &&
-            Character.toLowerCase(folderName.charAt(0)) == Character.toLowerCase(csvName.charAt(0))) {
-
-            // Replace first letter with 't'
-            modifiedTable = "t" + folderName.substring(1);
-        }
-
-        return "sibdba01." + modifiedTable;
-    }
-
-    public static void convertCsvToIndividualDb2Inserts(File csvFile, File outputFile, String tableName) {
-        try (BufferedReader br = new BufferedReader(new FileReader(csvFile));
-             BufferedWriter bw = new BufferedWriter(new FileWriter(outputFile))) {
-
-            String line;
-
-            // Skip header
-            br.readLine();
-
-            while ((line = br.readLine()) != null) {
-                if (line.trim().isEmpty()) continue;
-
-                String[] parts = line.split(",", -1);
-                StringBuilder pipeSeparated = new StringBuilder();
-                for (int i = 0; i < parts.length; i++) {
-                    if (i > 0) pipeSeparated.append("|");
-                    pipeSeparated.append(parts[i]);
+            if (lineCounter % MAX_LINES == 0) {
+                if (bw != null) {
+                    bw.close();
                 }
 
-                String formattedValues = StringFormatter.convertForDB2(pipeSeparated.toString());
-                bw.write("INSERT INTO " + tableName + " VALUES " + formattedValues + ";");
-                bw.newLine();
+                String newFileName = baseFileName + "_" + fileCounter + ".txt";
+                File newOutputFile = new File(outputFolderPath, newFileName);
+                bw = new BufferedWriter(new FileWriter(newOutputFile));
+                fileCounter++;
             }
 
-            System.out.println("Converted: " + csvFile.getName() + " → " + outputFile.getName());
+            String[] parts = line.split(",", -1);
+            StringBuilder pipeSeparated = new StringBuilder();
+            for (int i = 0; i < parts.length; i++) {
+                if (i > 0) pipeSeparated.append("|");
+                pipeSeparated.append(parts[i]);
+            }
 
-        } catch (IOException e) {
-            System.err.println("Error processing " + csvFile.getName() + ": " + e.getMessage());
+            String formattedValues = StringFormatter.convertForDB2(pipeSeparated.toString());
+            bw.write("INSERT INTO " + tableName + " VALUES " + formattedValues + ";");
+            bw.newLine();
+
+            lineCounter++;
+        }
+
+        if (bw != null) {
+            bw.close();
+        }
+
+        System.out.println("Converted: " + csvFile.getName() + " → " + (fileCounter - 1) + " output file(s)");
+
+    } catch (IOException e) {
+        System.err.println("Error processing " + csvFile.getName() + ": " + e.getMessage());
+        try {
+            if (bw != null) bw.close();
+        } catch (IOException ex) {
+            // Suppress secondary error
         }
     }
 }
